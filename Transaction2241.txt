@@ -1,0 +1,41 @@
+Terminal : 113
+Transaction : 2241
+Employee : 74854723    
+Amount : 593.96
+--------------------------------------------
+
+*- - - - - POS VERSION 000.057.028 - - - - *
+06/17/20 2747 0113 2241    BEG:04:48 PM     
+RECEIPT ID# 2-0169-2747-0113-2241-6         
+R-EMP# 74854723      (SALE)                 
+001:S057100515     Apple Watch    329.99 * T
+RETURN BY 07/02/20                          
+001:S057100515     Apple Watch    329.99 * T
+  MFR ID# (S) SFHLCL2AHMLTQ                 
+002:S057100635     iPad 7 Gen     249.99 * T
+RETURN BY 07/02/20                          
+002:S057100635     iPad 7 Gen     249.99 * T
+  MFR ID# (S) SDMQCQ2Z6MF3M                 
+002:S057100635     iPad 7 Gen     249.99 * T
+  MFR ID# (S) SDMQCQ2Z6MF3M                 
+003:S1378920205073 Target Circle            
+    Target Circle RETURN CODE: 200          
+                      SUBTOTAL    579.98    
+T = AZ TAX7.8000% ON    579.98     45.24    
+                         TOTAL    625.22    
+                      SUBTOTAL    550.98    
+T = AZ TAX7.8000% ON    550.98     42.98    
+                         TOTAL    593.96    
+007:*2434 TARGET DEBIT CARD TO    593.96    
+ACCT# (C) 6394630000002434        EXP:06/23 
+AID:A0000006123333                          
+Target Debit                                
+*APPROVED*  RC=0       AUTH=070649          
+                                            
+RECEIPT PRINTED                             
+057100515      140841154          16.50 -   
+057100635      140841154          12.50 -   
+     RedCard Savings     29.00-             
+STORE SURVEY PRINTED                        
+END OF TRANSACTION #2241   END:04:52 PM     
+0        31597    135384   0        0       

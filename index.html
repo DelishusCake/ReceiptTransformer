@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -7,34 +7,159 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
   </head>
   <body>
-    <div id="form">
-      <form id="textInput">
-        <input type="file" name="fileInput" id="fileInput" accept="text/plain">
-        <input type="submit" name="submit">
-      </form>
-    </div>
-    <div id="stuff"></div>
+    <!-- The top part -->
+    <header class="hero is-dark">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">Receipt Transformer</h1>
+          <h2 class="subtitle">Because TCM sucks a lot</h2>
+        </div>
+      </div>
+    </header>
+    <!-- The main content part -->
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <!-- Left, the input stuff -->
+          <div class="column">
+            <div id="file-input" class="file buttons has-name">
+              <label class="file-label">
+                <input class="file-input" type="file" name="fileInput" id="fileInput" accept="text/plain">
+                <span class="file-cta">
+                  <span class="file-icon"><i class="fas fa-upload"></i></span>
+                  <span class="file-label">Choose a file…</span>
+                </span>
+                <span class="file-name">No file uploaded</span>
+              </label>
+            </div>
+            <div id="input-contents" class="box"></div>
+          </div>
+          <!-- Right, the output stuff -->
+          <div class="column">
+            <div class="buttons">
+              <a id="copy-button" class="button">
+                <span class="icon icon-small"><i class="fa fa-clone"></i></span>
+                <span>Copy to clipboard</span>
+              </a>
+            </div>
+            
+            <div id="results" class="box"></div>
+          
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- The footer bit -->
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p><strong>Receipt Transformer</strong> by <a href="https://delishuscake.dev">Hunter Brady</a>.</p>
+        <p>Why not give me a job?</p>
+      </div>
+    </footer>
     <script type="text/javascript">
-      const textInputElement = document.getElementById('textInput');
-      const fileInputElement = document.getElementById('fileInput');
-      const stuffDivElement = document.getElementById('stuff');
-      textInputElement.addEventListener('submit', (e) =>
-      {
-        e.preventDefault();
+      /* 
+      Regular expression denoting the format for DCPI codes on receipts
+      On the new registers, this is <item number>:S<DPCI>
+      On the old it's just S<DPCI>
 
-        for (const file of fileInputElement.files)
+      Thus the regex has an optional line number capture at the front, then 
+      the S and 9-length DPCI number code, then the whitespace padding.
+
+      Technically line numbers are always 3 digits long, bug I made it zero or more
+      in case that changes in the future.
+
+      NOTE: REGEX is annoying, use https://regex101.com/ to play with this
+      */
+      const dpciRegex = /(([0-9]*):)?S([0-9]{9})\s+/gm;
+      
+      // Processes a receipt string into a list of TCM formatted DPCIs
+      function process(input)
+      {
+        // The result is an array of TCM formatted DPCI strings
+        var results = [];
+
+        // Get all the matches for the D regex
+        const matches = input.matchAll(dpciRegex);
+        // For each match
+        for (var match of matches)
         {
-          var reader = new FileReader();
-          reader.onload = function()
+          // The line number, should it exist, is always capture group 2
+          const line = match[2];
+          // The DPCI code is always capture group 3
+          const dpci = match[3];
+          
+          // Split the DPCI string into it's component parts
+          const d = dpci.substr(0, 3);
+          const p = dpci.substr(3, 2);
+          const c = dpci.substr(5, 4);
+          // Reconstruct in TCM format
+          const tcmDPCI = d+'-'+p+'-'+c;
+
+          // If line is defined, we're on a new register and we need to eliminate duplicates
+          if (line != undefined)
           {
-            var txt = reader.result;
-            var tag = document.createElement('p');
-            tag.appendChild(document.createTextNode(txt));
-            stuff.appendChild(tag);
+            // Get the item number from the line string and subtract one since the register starts counting at one
+            const id = parseInt(line) - 1;
+            // Set the item to the proper DPCI
+            results[id] = tcmDPCI;
+          } else {
+            // Old register, no line numbers needed, just push to the result array
+            results.push(tcmDPCI);
           }
-          reader.readAsText(file);
         }
-      });
+        return results;
+      }
+
+      // Get some elements for interactivity
+      const fileInputElement = document.querySelector('#file-input input[type=file]');
+      const fileNameElement = document.querySelector('#file-input .file-name');
+      const inputDivElement = document.querySelector('#input-contents');
+      const resultsDivElement = document.querySelector('#results');
+      // When the user presses the submit button on the form
+      fileInputElement.onchange = (e) =>
+      {
+        // Get the file
+        const file = fileInput.files[0];
+        // Clear the input and results div
+        resultsDivElement.innerHTML = "";
+        inputDivElement.innerHTML = "";
+        // Set the file name
+        fileNameElement.textContent = file.name;
+        // Fire up a new reader
+        var reader = new FileReader();
+        // When the reader is done loading
+        reader.onload = function()
+        {
+          // Get the resulting text
+          const txt = reader.result;
+          // Get the results
+          const results = process(txt);
+          // Do some output
+          var str = "";
+          for (const dpci of results)
+          {
+            str += dpci+" ";
+          }
+          console.log(results);
+          // 
+          for (const line of txt.split('\r'))
+          {
+            var tag = document.createElement('p');
+            tag.appendChild(document.createTextNode(line));
+            inputDivElement.appendChild(tag);
+          }
+          //
+          {
+            var tag = document.createElement('p');
+            tag.appendChild(document.createTextNode(str));
+            resultsDivElement.appendChild(tag);
+          }
+        }
+        // Fire up the reader
+        reader.readAsText(file);
+      };
     </script>
+    <!-- This is for icons -->
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   </body>
 </html>

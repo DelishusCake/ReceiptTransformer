@@ -19,33 +19,22 @@
     <!-- The main content part -->
     <section class="section">
       <div class="container">
-        <div class="columns">
-          <!-- Left, the input stuff -->
-          <div class="column">
-            <div id="file-input" class="file buttons has-name">
-              <label class="file-label">
-                <input class="file-input" type="file" name="fileInput" id="fileInput" accept="text/plain">
-                <span class="file-cta">
-                  <span class="file-icon"><i class="fas fa-upload"></i></span>
-                  <span class="file-label">Choose a file…</span>
-                </span>
-                <span class="file-name">No file uploaded</span>
-              </label>
-            </div>
-            <div id="input-contents" class="box"></div>
+        <!-- Left, the input stuff -->
+        <div class="column">
+          <div id="file-input" class="file buttons has-name">
+            <label class="file-label">
+              <input class="file-input" type="file" name="fileInput" id="fileInput" accept="text/plain">
+              <span class="file-cta">
+                <span class="file-icon"><i class="fas fa-upload"></i></span>
+                <span class="file-label">Choose a file…</span>
+              </span>
+              <span class="file-name">No file uploaded</span>
+            </label>
           </div>
-          <!-- Right, the output stuff -->
-          <div class="column">
-            <div class="buttons">
-              <a id="copy-button" class="button">
-                <span class="icon icon-small"><i class="fa fa-clone"></i></span>
-                <span>Copy to clipboard</span>
-              </a>
-            </div>
-            
-            <div id="results" class="box"></div>
+        </div>
           
-          </div>
+          <div id="results" class="box"></div>
+        
         </div>
       </div>
     </section>
@@ -113,7 +102,6 @@
       // Get some elements for interactivity
       const fileInputElement = document.querySelector('#file-input input[type=file]');
       const fileNameElement = document.querySelector('#file-input .file-name');
-      const inputDivElement = document.querySelector('#input-contents');
       const resultsDivElement = document.querySelector('#results');
       // When the user presses the submit button on the form
       fileInputElement.onchange = (e) =>
@@ -122,7 +110,6 @@
         const file = fileInput.files[0];
         // Clear the input and results div
         resultsDivElement.innerHTML = "";
-        inputDivElement.innerHTML = "";
         // Set the file name
         fileNameElement.textContent = file.name;
         // Fire up a new reader
@@ -141,13 +128,6 @@
             str += dpci+" ";
           }
           console.log(results);
-          // 
-          for (const line of txt.split('\r'))
-          {
-            var tag = document.createElement('p');
-            tag.appendChild(document.createTextNode(line));
-            inputDivElement.appendChild(tag);
-          }
           //
           {
             var tag = document.createElement('p');

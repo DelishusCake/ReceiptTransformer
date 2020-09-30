@@ -13,8 +13,10 @@ RETURN BY 07/02/20
 001:S057100515     Apple Watch    329.99 * T
 002:S057100635     iPad 7 Gen     249.99 * T
 RETURN BY 07/02/20                          
-002:S057100635     iPad 7 Gen     249.99 * T
-002:S057100635     iPad 7 Gen     249.99 * T     
+002:K057100635     iPad 7 Gen     249.99 * T
+002:K057100635     iPad 7 Gen     249.99 * T  
+004:K057100635     iPad 7 Gen     249.99 * T
+004:K057100635     iPad 7 Gen     249.99 * T     
                       SUBTOTAL    579.98    
 T = AZ TAX7.8000% ON    579.98     45.24    
                          TOTAL    625.22    

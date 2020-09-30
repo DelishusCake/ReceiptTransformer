@@ -47,6 +47,8 @@
       On the new registers, this is <item number>:S<DPCI>
       On the old it's just S<DPCI>
 
+      For keyed in enteries, the S becomes a K.
+
       Thus the regex has an optional line number capture at the front, then 
       the S and 9-length DPCI number code, then the whitespace padding.
 
@@ -55,7 +57,7 @@
 
       NOTE: REGEX is annoying, use https://regex101.com/ to play with this
       */
-      const dpciRegex = /(([0-9]*):)?S([0-9]{9})\s+/gm;
+      const dpciRegex = /(([0-9]*):)?(S|K)([0-9]{9})\s+/gm;
       
       // Processes a receipt string into a list of TCM formatted DPCIs
       function process(input)
@@ -63,15 +65,13 @@
         // The result is an array of TCM formatted DPCI strings
         var results = [];
 
-        // Get all the matches for the D regex
-        const matches = input.matchAll(dpciRegex);
         // For each match
-        for (var match of matches)
+        for (const match of input.matchAll(dpciRegex))
         {
           // The line number, should it exist, is always capture group 2
           const line = match[2];
-          // The DPCI code is always capture group 3
-          const dpci = match[3];
+          // The DPCI code is always capture group 4
+          const dpci = match[4];
           
           // Split the DPCI string into it's component parts
           const d = dpci.substr(0, 3);
@@ -92,7 +92,8 @@
             results.push(tcmDPCI);
           }
         }
-        return results;
+        // Filter out undefined entries
+        return results.filter(x => x !== undefined);
       }
 
       // Get some elements for interactivity
@@ -117,15 +118,10 @@
           const txt = reader.result;
           // Get the results
           const results = process(txt);
-          // Do some output
-          var str = "";
-          for (const dpci of results)
-          {
-            str += dpci+" ";
-          }
           console.log(results);
-          //
+          // Do some output
           {
+            const str = results.join(' ');
             var tag = document.createElement('p');
             tag.appendChild(document.createTextNode(str));
             resultsDivElement.appendChild(tag);
